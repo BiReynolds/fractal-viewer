@@ -2,9 +2,13 @@ using System.Numerics;
 
 namespace FractalViewer.Fractals
 {
-    public class MandelbrotFractalImager : FractalImagerBase
+    public class JuliaFractalImager : FractalImagerBase
     {
-        public MandelbrotFractalImager(FractalInfo fractalInfo) : base(fractalInfo) {}
+        Complex ParameterValue;
+        public JuliaFractalImager(Complex parameterValue, FractalInfo fractalInfo) : base(fractalInfo)
+        {
+            ParameterValue = parameterValue;
+        }
         protected override void CalculateData()
         {
             if (ImageParams == null)
@@ -18,12 +22,11 @@ namespace FractalViewer.Fractals
                 {
                     Complex locationOffset = new(col * ImageParams.Delta, -row * ImageParams.Delta);
                     Complex location = ImageParams.TopLeftLocation + locationOffset;
-                    int escapeIndex = FractalInfo.GetEscapeIndex(0, location, ImageParams.MaxIterations);
+                    int escapeIndex = FractalInfo.GetEscapeIndex(location, ParameterValue, ImageParams.MaxIterations);
                     rawData[row, col] = new FractalPoint(location, escapeIndex);
                 }
             }
             ImageData = new(rawData, ImageParams.NumRows, ImageParams.NumCols);
         }
-
     }
 }

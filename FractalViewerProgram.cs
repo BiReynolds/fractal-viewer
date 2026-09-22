@@ -7,13 +7,16 @@ namespace FractalViewer
     public class FractalViewerProgram
     {
         FractalWindow Window;
-        MandelbrotFractalImager Imager;
+        FractalImagerBase Imager;
         FractalArtist Artist;
-        public FractalViewerProgram(int screenWidth, int screenHeight, Complex topLeft, Complex bottomRight, FractalInfo fractalInfo, int maxIterations, IFractalColorizer colorizer)
+        public FractalViewerProgram(int screenWidth, int screenHeight, 
+                                    Complex topLeft, Complex bottomRight, int maxIterations, 
+                                    FractalImagerBase imager, IFractalColorizer colorizer)
         {
             Window = new(screenWidth, screenHeight);
-            FractalImageParameters frameParams = new(topLeft, bottomRight, screenWidth, maxIterations);
-            Imager = new(fractalInfo, frameParams);
+            FractalImageParameters imageParams = new(topLeft, bottomRight, screenWidth, maxIterations);
+            Imager = imager;
+            Imager.SetImageParams(imageParams);
             Artist = new(colorizer);
         }
 

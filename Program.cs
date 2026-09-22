@@ -15,7 +15,8 @@ public static class Program
     {
         FractalInfo fractalInfo = GetMandelbrotInfo();
         IFractalColorizer colorizer = new GradientColorizer(Color.Black, Color.White, MaxIterations, 0.2);
-        FractalViewerProgram viewer = new(NumRows, NumCols, TopLeft, BottomRight, fractalInfo, MaxIterations, colorizer);
+        FractalImagerBase imager = new JuliaFractalImager(new Complex(-0.5, -0.5), fractalInfo);
+        FractalViewerProgram viewer = new(NumRows, NumCols, TopLeft, BottomRight, MaxIterations, imager, colorizer);
         viewer.Start();
     }
 
