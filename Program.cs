@@ -13,7 +13,7 @@ public static class Program
     static int MaxIterations = 100;
     public static void Main()
     {
-        FractalInfo fractalInfo = GetMandelbrotInfo();
+        FractalInfo fractalInfo = GetQuadraticJuliaInfo();
         IFractalColorizer colorizer = new GradientColorizer(Color.Black, Color.White, MaxIterations, 0.2);
         FractalImagerBase imager = new JuliaFractalImager(new Complex(-0.5, -0.5), fractalInfo);
         FractalViewerProgram viewer = new(NumRows, NumCols, TopLeft, BottomRight, MaxIterations, imager, colorizer);
@@ -22,7 +22,23 @@ public static class Program
 
     static FractalInfo GetMandelbrotInfo()
     {
-        return new FractalInfo(QuadraticIterator, 2);
+        // The mandelbrot iteration has the property that if z is ever a distance > 2 from the origin, that sequence necessarily diverges.  
+        return new FractalInfo(QuadraticIterator, x => 2);
+    }
+
+    static FractalInfo GetQuadraticJuliaInfo()
+    {
+        // Julia sets have a slightly more complicated escape radius logic - a radius R which guarantees divergence must satisfy that R^2 - R > magnitude(c)
+        // Here, we increment by 0.1 until we find such a radius
+        return new FractalInfo(QuadraticIterator, c =>
+        {
+            double testRadius = 0.1;
+            while (testRadius * testRadius - testRadius < c.Magnitude)
+            {
+                testRadius += 0.1;
+            }
+            return testRadius;
+        });
     }
 
     static Complex QuadraticIterator(Complex iteratingVariable, Complex parameter)

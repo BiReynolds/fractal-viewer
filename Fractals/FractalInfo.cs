@@ -5,24 +5,25 @@ namespace FractalViewer.Fractals
     public class FractalInfo
     {
         readonly Func<Complex, Complex, Complex> FractalFunction;
-        readonly double EscapeRadius;
-        public FractalInfo(Func<Complex, Complex, Complex> fractalFunction, double escapeRadius)
+        readonly Func<Complex, double> EscapeRadiusSelector;
+        public FractalInfo(Func<Complex, Complex, Complex> fractalFunction, Func<Complex, double> escapeRadiusSelector)
         {
             FractalFunction = fractalFunction;
-            EscapeRadius = escapeRadius;
+            EscapeRadiusSelector = escapeRadiusSelector;
         }
 
         public int GetEscapeIndex(Complex startValue, Complex paramValue, int maxIterations)
         {
+            double escapeRadius = EscapeRadiusSelector(paramValue);
             Complex currValue = startValue;
             int currIterations = 0;
-            while (currValue.Magnitude <= EscapeRadius && currIterations < maxIterations)
+            while (currValue.Magnitude <= escapeRadius && currIterations < maxIterations)
             {
                 currValue = FractalFunction(currValue, paramValue);
                 currIterations++;
             }
 
-            if (currValue.Magnitude > EscapeRadius)
+            if (currValue.Magnitude > escapeRadius)
             {
                 return currIterations;
             }
