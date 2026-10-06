@@ -1,12 +1,17 @@
 using System.Numerics;
 using FractalViewer.Fractals;
+using FractalViewer.Input;
+using FractalViewer.Input.RawInput;
 using FractalViewer.Rendering;
+using FractalViewer.Rendering.UserInterface;
 
 namespace FractalViewer
 {
     public class FractalViewerProgram
     {
         FractalWindow Window;
+        UIManager UIManager = new();
+        FractalInputManager InputManager = new();
         FractalImagerBase Imager;
         FractalArtist Artist;
         public FractalViewerProgram(int screenWidth, int screenHeight, 
@@ -22,8 +27,8 @@ namespace FractalViewer
 
         public void Start()
         {
+            RegisterEvents();
             FractalImageData image = Imager.GetFractalImageData();
-
             Window.InitWindow();
             Window.SetTargetFPS(10);
             while (!Window.WindowShouldClose())
@@ -33,10 +38,18 @@ namespace FractalViewer
 
                 Artist.DrawFractalImage(image);
 
+                InputManager.CheckEvents();
+
                 Window.EndDrawing();
             }
 
             Window.CloseWindow();
+        }
+        
+        public void RegisterEvents()
+        {
+            InputManager.SelectionStarted += (o, e) => { UIManager.SelectionBox.StartAt(e.StartX, e.StartY); };
+            InputManager.SelectionEnded += (o, e) => { UIManager.SelectionBox.DragTo(e.EndX, e.EndY); };
         }
     }
 }

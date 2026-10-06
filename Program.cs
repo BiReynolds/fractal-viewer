@@ -13,7 +13,7 @@ public static class Program
     static int MaxIterations = 100;
     public static void Main()
     {
-        FractalInfo fractalInfo = GetQuadraticJuliaInfo();
+        FractalInfo fractalInfo = GetMandelbrotInfo();
         IFractalColorizer colorizer = new GradientColorizer(Color.Black, Color.White, MaxIterations, 0.2);
         FractalImagerBase imager = new JuliaFractalImager(new Complex(-0.5, -0.5), fractalInfo);
         FractalViewerProgram viewer = new(NumRows, NumCols, TopLeft, BottomRight, MaxIterations, imager, colorizer);
