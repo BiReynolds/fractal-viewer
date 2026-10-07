@@ -11,10 +11,13 @@ namespace FractalViewer.Fractals
         }
 
         protected abstract void CalculateData(); // must set ImageData!!!
+        protected abstract void RecalculateData(); // Used to avoid reallocating a large array
         public void SetImageParams(FractalImageParameters imageParams)
         {
             ImageParams = imageParams;
+            CalculateData();
         }
+
         public virtual FractalImageData GetFractalImageData()
         {
             if (ImageData == null)

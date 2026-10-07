@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace FractalViewer.Fractals
 {
     public class FractalImageData
@@ -22,6 +24,11 @@ namespace FractalViewer.Fractals
                 }
             }
             return result;
+        }
+
+        public Complex GetLocationAtPixel(int x, int y)
+        {
+            return Data[y, x].Location;
         }
     }
 }

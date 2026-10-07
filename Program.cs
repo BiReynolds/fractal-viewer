@@ -10,7 +10,7 @@ public static class Program
     static Complex BottomRight = new(2, -2);
     static int NumRows = 1000;
     static int NumCols = 1000;
-    static int MaxIterations = 100;
+    static int MaxIterations = 50;
     public static void Main()
     {
         FractalInfo fractalInfo = GetMandelbrotInfo();

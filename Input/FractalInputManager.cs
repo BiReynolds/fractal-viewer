@@ -8,6 +8,7 @@ namespace FractalViewer.Input
     {
         public event EventHandler<SelectionEventArgs>? SelectionStarted;
         public event EventHandler<SelectionEventArgs>? SelectionEnded;
+        public event EventHandler<SelectionEventArgs>? SelectionChanged;
         bool IsSelecting;
         MouseListener MouseListener = new();
         int SelectionStartX = -1;
@@ -16,6 +17,7 @@ namespace FractalViewer.Input
         {
             MouseListener.PressEvent += HandleMousePressEvent;
             MouseListener.ReleaseEvent += HandleMouseReleaseEvent;
+            MouseListener.MoveEvent += HandleMouseMoveEvent;
         }
 
         void SelectionStarted_Raised(int x, int y)
@@ -41,6 +43,19 @@ namespace FractalViewer.Input
             {
                 SelectionEventArgs eventArgs = new(SelectionStartX, SelectionStartY, x, y);
                 SelectionEnded.Invoke(this, eventArgs);
+            }
+        }
+
+        void SelectionChanged_Raised(int x, int y)
+        {
+            if (SelectionChanged == null)
+            {
+                return;
+            }
+            else
+            {
+                SelectionEventArgs eventArgs = new(SelectionStartX, SelectionStartY, x, y);
+                SelectionChanged.Invoke(this, eventArgs);
             }
         }
 
@@ -73,6 +88,14 @@ namespace FractalViewer.Input
             if (IsSelecting && e.Button == MouseButton.Left)
             {
                 EndAreaSelection(e.X, e.Y);
+            }
+        }
+
+        void HandleMouseMoveEvent(object? o, MouseMoveEventArgs e)
+        {
+            if (IsSelecting)
+            {
+                SelectionChanged_Raised(e.NewX, e.NewY);
             }
         }
 

@@ -16,6 +16,7 @@ namespace FractalViewer.Fractals
                 throw new Exception("FractalImager: Tried to calculate data without setting ImageParams");
             }
             FractalPoint[,] rawData = new FractalPoint[ImageParams.NumRows, ImageParams.NumCols];
+
             for (int row = 0; row < ImageParams.NumRows; row++)
             {
                 for (int col = 0; col < ImageParams.NumCols; col++)
@@ -26,7 +27,13 @@ namespace FractalViewer.Fractals
                     rawData[row, col] = new FractalPoint(location, escapeIndex);
                 }
             }
+            
             ImageData = new(rawData, ImageParams.NumRows, ImageParams.NumCols);
+        }
+
+        protected override void RecalculateData()
+        {
+            
         }
     }
 }

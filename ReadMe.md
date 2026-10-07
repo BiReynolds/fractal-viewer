@@ -1,3 +1,6 @@
+# Todo
+Need to refactor Imager classes so that we don't need to create the rawData array new each time
+
 # Current Plans
 ## Image Save functionality
 - User will be able to save the current rendering as an image 

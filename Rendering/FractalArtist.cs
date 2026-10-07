@@ -11,15 +11,22 @@ namespace FractalViewer.Rendering
             Colorizer = colorizer;
         }
 
-        public void DrawFractalImage(FractalImageData imageData)
+        public void DrawFractalImage(FractalImageData? imageData)
         {
-            for (int row = 0; row < imageData.NumRows; row++)
+            if (imageData == null)
             {
-                for (int col = 0; col < imageData.NumCols; col++)
+                Console.WriteLine("Recalculating Image...");
+            }
+            else
+            {
+                for (int row = 0; row < imageData.NumRows; row++)
                 {
-                    int escapeIndex = imageData.Data[row, col].EscapeIndex;
-                    Color pixelColor = Colorizer.GetColorFromEscapeIndex(escapeIndex);
-                    Raylib.DrawPixel(col, row, pixelColor);
+                    for (int col = 0; col < imageData.NumCols; col++)
+                    {
+                        int escapeIndex = imageData.Data[row, col].EscapeIndex;
+                        Color pixelColor = Colorizer.GetColorFromEscapeIndex(escapeIndex);
+                        Raylib.DrawPixel(col, row, pixelColor);
+                    }
                 }
             }
         }

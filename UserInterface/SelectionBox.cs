@@ -1,4 +1,6 @@
-namespace FractalViewer.Rendering.UserInterface
+using Raylib_cs;
+
+namespace FractalViewer.UserInterface
 {
     public class SelectionBox
     {
@@ -13,7 +15,6 @@ namespace FractalViewer.Rendering.UserInterface
 
         public void StartAt(int x, int y)
         {
-            Console.WriteLine($"Selection started at {x}, {y}");
             StartX = x;
             StartY = y;
             EndX = x;
@@ -28,11 +29,19 @@ namespace FractalViewer.Rendering.UserInterface
 
         public void Reset()
         {
-            Console.WriteLine($"value before reset {this}");
             StartX = -1;
             StartY = -1;
             EndX = -1;
             EndY = -1;
+        }
+
+        public void Render()
+        {
+            int leftX = Math.Min(StartX, EndX);
+            int rightX = Math.Max(StartX, EndX);
+            int topY = Math.Min(StartY, EndY);
+            int bottomY = Math.Max(StartY, EndY);
+            Raylib.DrawRectangleLines(leftX, topY, rightX - leftX, bottomY - topY, Color.Green);
         }
 
         public override string ToString()

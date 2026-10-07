@@ -1,3 +1,4 @@
+using System.Numerics;
 using Raylib_cs;
 
 namespace FractalViewer.Input.RawInput
@@ -6,10 +7,12 @@ namespace FractalViewer.Input.RawInput
     {
         public event EventHandler<MousePressEventArgs>? PressEvent;
         public event EventHandler<MouseReleaseEventArgs>? ReleaseEvent;
+        public event EventHandler<MouseMoveEventArgs>? MoveEvent;
         public void CheckEvents()
         {
             CheckMousePressEvents();
             CheckMouseReleaseEvents();
+            CheckMouseMove();
         }
         
         void CheckMousePressEvents()
@@ -29,8 +32,21 @@ namespace FractalViewer.Input.RawInput
             {
                 if (Raylib.IsMouseButtonReleased(button))
                 {
-                    
+                    ReleaseEvent_Raised(button, Raylib.GetMouseX(), Raylib.GetMouseY());
                 }
+            }
+        }
+
+        void CheckMouseMove()
+        {
+            Vector2 delta = Raylib.GetMouseDelta();
+            if (delta.LengthSquared() == 0)
+            {
+                return;
+            }
+            else
+            {
+                MoveEvent_Raised((int)delta.X, (int)delta.Y, Raylib.GetMouseX(), Raylib.GetMouseY());
             }
         }
 
@@ -57,6 +73,19 @@ namespace FractalViewer.Input.RawInput
             {
                 MouseReleaseEventArgs eventArgs = new(button, x, y);
                 ReleaseEvent.Invoke(this, eventArgs);
+            }
+        }
+
+        void MoveEvent_Raised(int deltaX, int deltaY, int newX, int newY)
+        {
+            if (MoveEvent == null)
+            {
+                return;
+            }
+            else
+            {
+                MouseMoveEventArgs eventArgs = new(deltaX, deltaY, newX, newY);
+                MoveEvent.Invoke(this, eventArgs);
             }
         }
     }
