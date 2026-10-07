@@ -23,7 +23,7 @@ namespace FractalViewer.Rendering
                 {
                     for (int col = 0; col < imageData.NumCols; col++)
                     {
-                        int escapeIndex = imageData.Data[row, col].EscapeIndex;
+                        int escapeIndex = imageData.Data[row, col];
                         Color pixelColor = Colorizer.GetColorFromEscapeIndex(escapeIndex);
                         Raylib.DrawPixel(col, row, pixelColor);
                     }

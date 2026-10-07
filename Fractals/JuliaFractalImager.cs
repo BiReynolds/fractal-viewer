@@ -9,14 +9,15 @@ namespace FractalViewer.Fractals
         {
             ParameterValue = parameterValue;
         }
-        protected override void CalculateData()
+        public override void CalculateData(int[,] dataBuffer)
         {
             if (ImageParams == null)
             {
                 throw new Exception("FractalImager: Tried to calculate data without setting ImageParams");
             }
-            FractalPoint[,] rawData = new FractalPoint[ImageParams.NumRows, ImageParams.NumCols];
-
+            Console.WriteLine("Calculating image data");
+            Console.WriteLine($"ImageParams Rows/Cols: {ImageParams.NumRows}, {ImageParams.NumCols}");
+            Console.WriteLine($"dataBuffer Rows/Cols: {dataBuffer.GetLength(0)}, {dataBuffer.GetLength(1)}");
             for (int row = 0; row < ImageParams.NumRows; row++)
             {
                 for (int col = 0; col < ImageParams.NumCols; col++)
@@ -24,16 +25,10 @@ namespace FractalViewer.Fractals
                     Complex locationOffset = new(col * ImageParams.Delta, -row * ImageParams.Delta);
                     Complex location = ImageParams.TopLeftLocation + locationOffset;
                     int escapeIndex = FractalInfo.GetEscapeIndex(location, ParameterValue, ImageParams.MaxIterations);
-                    rawData[row, col] = new FractalPoint(location, escapeIndex);
+                    dataBuffer[row, col] = escapeIndex;
                 }
             }
-            
-            ImageData = new(rawData, ImageParams.NumRows, ImageParams.NumCols);
-        }
-
-        protected override void RecalculateData()
-        {
-            
+            Console.WriteLine("done");
         }
     }
 }

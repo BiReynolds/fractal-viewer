@@ -8,26 +8,28 @@ namespace FractalViewer.Fractals
         public int NumRows, NumCols;
         public int MaxIterations;
         public double Delta;
-        public FractalImageParameters(Complex topLeftLoc, Complex bottomRightLoc, int numRows, int maxIterations)
+        public FractalImageParameters(Complex topLeftLoc, Complex bottomRightLoc, int numRows, int numCols, int maxIterations)
         {
             TopLeftLocation = topLeftLoc;
             BottomRightLocation = bottomRightLoc;
             NumRows = numRows;
+            NumCols = numCols;
             MaxIterations = maxIterations;
-            Delta = GetDelta(TopLeftLocation, BottomRightLocation, NumRows);
-            NumCols = GetNumCols(TopLeftLocation, BottomRightLocation, Delta);
+            Delta = GetDelta(TopLeftLocation, BottomRightLocation, NumRows, NumCols);
+            Console.WriteLine(Delta);
         }
 
-        private static double GetDelta(Complex topLeftLoc, Complex bottomRightLoc, int numRows)
+        private static double GetDelta(Complex topLeftLoc, Complex bottomRightLoc, int numRows, int numCols)
         {
             double realRange = bottomRightLoc.Real - topLeftLoc.Real;
-            return realRange / (numRows - 1);
+            double imagRange = topLeftLoc.Imaginary - bottomRightLoc.Imaginary;
+            return Math.Min(realRange / (numCols - 1), imagRange / (numRows - 1));
         }
 
-        private static int GetNumCols(Complex topLeftLoc, Complex bottomRightLoc, double delta)
+        public Complex GetComplexAtPixel(int x, int y)
         {
-            double imagRange = topLeftLoc.Imaginary - bottomRightLoc.Imaginary;
-            return (int)Math.Ceiling(imagRange / delta) + 1;
+            Complex complexDiff = new(Delta * x, -Delta * y);
+            return TopLeftLocation + complexDiff;
         }
     }
 }

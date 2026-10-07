@@ -5,13 +5,13 @@ namespace FractalViewer.Fractals
     public class MandelbrotFractalImager : FractalImagerBase
     {
         public MandelbrotFractalImager(FractalInfo fractalInfo) : base(fractalInfo) {}
-        protected override void CalculateData()
+        public override void CalculateData(int[,] dataBuffer)
         {
             if (ImageParams == null)
             {
                 throw new Exception("FractalImager: Tried to calculate data without setting ImageParams");
             }
-            FractalPoint[,] rawData = new FractalPoint[ImageParams.NumRows, ImageParams.NumCols];
+
             for (int row = 0; row < ImageParams.NumRows; row++)
             {
                 for (int col = 0; col < ImageParams.NumCols; col++)
@@ -19,11 +19,9 @@ namespace FractalViewer.Fractals
                     Complex locationOffset = new(col * ImageParams.Delta, -row * ImageParams.Delta);
                     Complex location = ImageParams.TopLeftLocation + locationOffset;
                     int escapeIndex = FractalInfo.GetEscapeIndex(0, location, ImageParams.MaxIterations);
-                    rawData[row, col] = new FractalPoint(location, escapeIndex);
+                    dataBuffer[row, col] = escapeIndex;
                 }
             }
-            ImageData = new(rawData, ImageParams.NumRows, ImageParams.NumCols);
         }
-
     }
 }

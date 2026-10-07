@@ -15,22 +15,23 @@ namespace FractalViewer
         FractalImageParameters ImageParams;
         FractalImagerBase Imager;
         FractalArtist Artist;
-        FractalImageData? CurrentImage;
+        FractalImageData CurrentImage;
         public FractalViewerProgram(int screenWidth, int screenHeight, 
                                     Complex topLeft, Complex bottomRight, int maxIterations, 
                                     FractalImagerBase imager, IFractalColorizer colorizer)
         {
             Window = new(screenWidth, screenHeight);
-            ImageParams = new(topLeft, bottomRight, screenWidth, maxIterations);
+            ImageParams = new(topLeft, bottomRight, screenWidth, screenHeight, maxIterations);
             Imager = imager;
             Imager.SetImageParams(ImageParams);
             Artist = new(colorizer);
+            CurrentImage = new(ImageParams.NumRows, ImageParams.NumCols);
         }
 
         public void Start()
         {
             RegisterEvents();
-            CurrentImage = Imager.GetFractalImageData();
+            Imager.CalculateData(CurrentImage.Data);
             Window.InitWindow();
             Window.SetTargetFPS(60);
             while (!Window.WindowShouldClose())
@@ -62,15 +63,14 @@ namespace FractalViewer
 
         private async void RecalculateImageData(SelectionEventArgs e)
         {
-            Console.WriteLine("Recalculating Image Data...");
-            e.GetSelectionInfo(out int left, out int top, out int bottom, out int right);
-            Complex newTopLeft = CurrentImage.GetLocationAtPixel(left, top);
-            Complex newBottomRight = CurrentImage.GetLocationAtPixel(right, bottom);
-            ImageParams = new(newTopLeft, newBottomRight, ImageParams.NumRows, ImageParams.MaxIterations);
+            e.GetSelectionInfo(out int left, out int top, out int right, out int bottom);
+            Complex newTopLeft = ImageParams.GetComplexAtPixel(left, top);
+            Complex newBottomRight = ImageParams.GetComplexAtPixel(right, bottom);
+            Console.Write(newTopLeft);
+            Console.Write(newBottomRight);
+            ImageParams = new(newTopLeft, newBottomRight, ImageParams.NumRows, ImageParams.NumCols, ImageParams.MaxIterations);
             Imager.SetImageParams(ImageParams);
-            CurrentImage = null;
-            CurrentImage = Imager.GetFractalImageData();
-            Console.WriteLine("Image Data Recalculated");
+            Imager.CalculateData(CurrentImage.Data);
         }
     }
 }
